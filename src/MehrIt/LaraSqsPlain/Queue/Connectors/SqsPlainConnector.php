@@ -9,31 +9,26 @@
 	namespace MehrIt\LaraSqsPlain\Queue\Connectors;
 
 
-	use Aws\Sqs\SqsClient;
-	use Illuminate\Queue\Connectors\SqsConnector;
-	use Illuminate\Support\Arr;
+	use Illuminate\Contracts\Queue\Queue;
+	use MehrIt\LaraSqsExt\Queue\Connectors\SqsExtConnector;
 	use MehrIt\LaraSqsPlain\Queue\SqsPlainQueue;
 
-	class SqsPlainConnector extends SqsConnector
+	class SqsPlainConnector extends SqsExtConnector
 	{
+		const DEFAULT_QUEUE_TYPE = SqsPlainQueue::class;
+
 		/**
 		 * Establish a queue connection.
 		 *
 		 * @param  array $config
-		 * @return \Illuminate\Contracts\Queue\Queue
+		 * @return Queue|SqsPlainQueue
 		 */
 		public function connect(array $config) {
-			$config = $this->getDefaultConfiguration($config);
-			if ($config['key'] && $config['secret']) {
-				$config['credentials'] = Arr::only($config, ['key', 'secret']);
-			}
 
 			if (empty($config['message_handler']))
 				throw new \InvalidArgumentException("Missing configuration option \"message_handler\" for queue \"${config['queue']}\"");
 
-			return new SqsPlainQueue(
-				new SqsClient($config), $config['message_handler'], $config['queue'], Arr::get($config, 'prefix', '')
-			);
+			return parent::connect($config);
 		}
 
 	}

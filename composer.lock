@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6168e1901912988429a438ac9bec970c",
+    "content-hash": "8b3ab58240e00b96e849fa08daa99491",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.82.4",
+            "version": "3.82.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "e9a22aaec00218e57dcd8915d2e06978255dac5f"
+                "reference": "a254cef386f193249e2dea5ca54f66b3e2c00963"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e9a22aaec00218e57dcd8915d2e06978255dac5f",
-                "reference": "e9a22aaec00218e57dcd8915d2e06978255dac5f",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a254cef386f193249e2dea5ca54f66b3e2c00963",
+                "reference": "a254cef386f193249e2dea5ca54f66b3e2c00963",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-01-03T00:46:35+00:00"
+            "time": "2019-01-04T23:01:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -275,6 +275,55 @@
                 "url"
             ],
             "time": "2018-12-28T01:59:01+00:00"
+        },
+        {
+            "name": "mehr-it/lara-sqs-ext",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mehr-it/lara-sqs-ext.git",
+                "reference": "19411506ad60c5ebd43fc9a91b967113be600bdd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mehr-it/lara-sqs-ext/zipball/19411506ad60c5ebd43fc9a91b967113be600bdd",
+                "reference": "19411506ad60c5ebd43fc9a91b967113be600bdd",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "~3.0",
+                "ext-json": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.7",
+                "phpunit/phpunit": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MehrIt\\LaraSqsExt\\Provider\\SqsExtServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christopher Mieger",
+                    "email": "mail@mehr-it.info"
+                }
+            ],
+            "description": "Extended and extensible SQS Queue driver for Laravel (long polling, additional parameters)",
+            "time": "2019-01-04T19:04:28+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -861,12 +910,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "0918020c2d5450126cb56b77dd9089c9868160b3"
+                "reference": "ac3b89b49b4116d83b4b3e372c52d3afe405c989"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/0918020c2d5450126cb56b77dd9089c9868160b3",
-                "reference": "0918020c2d5450126cb56b77dd9089c9868160b3",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/ac3b89b49b4116d83b4b3e372c52d3afe405c989",
+                "reference": "ac3b89b49b4116d83b4b3e372c52d3afe405c989",
                 "shasum": ""
             },
             "require": {
@@ -895,7 +944,7 @@
                 "symfony/routing": "^4.2",
                 "symfony/var-dumper": "^4.2",
                 "tijsverkoyen/css-to-inline-styles": "^2.2.1",
-                "vlucas/phpdotenv": "^2.2"
+                "vlucas/phpdotenv": "^3.0"
             },
             "conflict": {
                 "tightenco/collect": "<5.5.33"
@@ -999,7 +1048,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-01-02T19:57:49+00:00"
+            "time": "2019-01-04T22:58:48+00:00"
         },
         {
             "name": "league/flysystem",
@@ -1808,6 +1857,56 @@
                 }
             ],
             "time": "2017-07-14T14:27:02+00:00"
+        },
+        {
+            "name": "phpoption/phpoption",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schmittjoh/php-option.git",
+                "reference": "94e644f7d2051a5f0fcf77d81605f152eecff0ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/94e644f7d2051a5f0fcf77d81605f152eecff0ed",
+                "reference": "94e644f7d2051a5f0fcf77d81605f152eecff0ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PhpOption\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Option Type for PHP",
+            "keywords": [
+                "language",
+                "option",
+                "php",
+                "type"
+            ],
+            "time": "2015-07-25T16:39:46+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -3063,12 +3162,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "471125d6748cf0526e97f83a71f40b17ce65dbc1"
+                "reference": "d4967c85500c52b01b3fa42ae81ab2ab00b9c10d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/471125d6748cf0526e97f83a71f40b17ce65dbc1",
-                "reference": "471125d6748cf0526e97f83a71f40b17ce65dbc1",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d4967c85500c52b01b3fa42ae81ab2ab00b9c10d",
+                "reference": "d4967c85500c52b01b3fa42ae81ab2ab00b9c10d",
                 "shasum": ""
             },
             "require": {
@@ -3124,7 +3223,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2019-01-03T09:16:58+00:00"
+            "time": "2019-01-04T15:14:53+00:00"
         },
         {
             "name": "symfony/contracts",
@@ -3737,12 +3836,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "21eb9234c43401d01c012974f56ea259dacb9151"
+                "reference": "474b4bc4c8fc0d1eea02b45d86008100701e058c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/21eb9234c43401d01c012974f56ea259dacb9151",
-                "reference": "21eb9234c43401d01c012974f56ea259dacb9151",
+                "url": "https://api.github.com/repos/symfony/process/zipball/474b4bc4c8fc0d1eea02b45d86008100701e058c",
+                "reference": "474b4bc4c8fc0d1eea02b45d86008100701e058c",
                 "shasum": ""
             },
             "require": {
@@ -3778,7 +3877,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2019-01-03T09:16:58+00:00"
+            "time": "2019-01-04T15:14:53+00:00"
         },
         {
             "name": "symfony/routing",
@@ -4095,28 +4194,29 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "2.5.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36"
+                "reference": "bf58b9c61ba37ef1deaa29fe5dbb30222c948541"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/cfd5dc225767ca154853752abc93aeec040fcf36",
-                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/bf58b9c61ba37ef1deaa29fe5dbb30222c948541",
+                "reference": "bf58b9c61ba37ef1deaa29fe5dbb30222c948541",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": "^5.4 || ^7.0",
+                "phpoption/phpoption": "^1.5"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.0"
+                "phpunit/phpunit": "^4.8.35 || ^5.0 || ^6.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -4141,7 +4241,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2018-10-30T17:29:25+00:00"
+            "time": "2019-01-04T23:43:30+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -4200,6 +4300,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.6.0",
+        "ext-json": "*"
+    },
     "platform-dev": []
 }

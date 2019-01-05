@@ -16,7 +16,7 @@
 	class SqsPlainConnectorTest extends TestCase
 	{
 
-		public function testConnect_MessageHandlerPassed() {
+		public function testConnect() {
 			$conn = new SqsPlainConnector();
 
 			/** @var SqsPlainQueue $ret */
@@ -32,11 +32,9 @@
 
 			$this->assertInstanceOf(SqsPlainQueue::class, $ret);
 
-			$this->assertSame('my_handler', $ret->getMessageHandler());
-
 		}
 
-		public function testConnect_MessagebHandlerNotConfigured() {
+		public function testConnect_MessageHandlerNotConfigured() {
 			$conn = new SqsPlainConnector();
 
 			$this->expectException(\InvalidArgumentException::class);

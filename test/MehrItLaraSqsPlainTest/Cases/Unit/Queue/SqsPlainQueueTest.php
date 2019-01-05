@@ -68,18 +68,18 @@
 		}
 
 		public function testPopProperlyPopsJobOffOfSqs() {
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->setContainer(m::mock(Container::class));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
 			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount']])->andReturn($this->mockedReceiveMessageResponseModel);
 			$result = $queue->pop($this->queueName);
 			$this->assertInstanceOf(SqsPlainJob::class, $result);
 
-			$this->assertSame('message_handler', $result->getMessageHandler());
+			$this->assertSame('my_message_handler', $result->getMessageHandler());
 		}
 
 		public function testPopProperlyHandlesEmptyMessage() {
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->setContainer(m::mock(Container::class));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
 			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount']])->andReturn($this->mockedReceiveEmptyMessageResponseModel);
@@ -89,7 +89,7 @@
 
 		public function testDelayedPushWithDateTimeProperlyPushesJobOntoSqs() {
 			$now   = Carbon::now();
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'secondsUntil', 'getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'secondsUntil', 'getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->expects($this->once())->method('createPayload')->with($this->mockedJob, $this->queueName, $this->mockedData)->will($this->returnValue($this->mockedPayload));
 			$queue->expects($this->once())->method('secondsUntil')->with($now)->will($this->returnValue(5));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
@@ -99,7 +99,7 @@
 		}
 
 		public function testDelayedPushProperlyPushesJobOntoSqs() {
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'secondsUntil', 'getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'secondsUntil', 'getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->expects($this->once())->method('createPayload')->with($this->mockedJob, $this->queueName, $this->mockedData)->will($this->returnValue($this->mockedPayload));
 			$queue->expects($this->once())->method('secondsUntil')->with($this->mockedDelay)->will($this->returnValue($this->mockedDelay));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
@@ -109,7 +109,7 @@
 		}
 
 		public function testPushProperlyPushesJobOntoSqs() {
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['createPayload', 'getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->expects($this->once())->method('createPayload')->with($this->mockedJob, $this->queueName, $this->mockedData)->will($this->returnValue($this->mockedPayload));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
 			$this->sqs->shouldReceive('sendMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'MessageBody' => $this->mockedPayload])->andReturn($this->mockedSendMessageResponseModel);
@@ -118,7 +118,7 @@
 		}
 
 		public function testSizeProperlyReadsSqsQueueSize() {
-			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, 'message_handler', $this->queueName, $this->account])->getMock();
+			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
 			$this->sqs->shouldReceive('getQueueAttributes')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateNumberOfMessages']])->andReturn($this->mockedQueueAttributesResponseModel);
 			$size = $queue->size($this->queueName);
@@ -126,14 +126,14 @@
 		}
 
 		public function testGetQueueProperlyResolvesUrlWithPrefix() {
-			$queue = new SqsPlainQueue($this->sqs, 'my_job_handler', $this->queueName, $this->prefix);
+			$queue = new SqsPlainQueue($this->sqs, $this->queueName, $this->prefix, ['message_handler' => 'my_message_handler']);
 			$this->assertEquals($this->queueUrl, $queue->getQueue(null));
 			$queueUrl = $this->baseUrl . '/' . $this->account . '/test';
 			$this->assertEquals($queueUrl, $queue->getQueue('test'));
 		}
 
 		public function testGetQueueProperlyResolvesUrlWithoutPrefix() {
-			$queue = new SqsPlainQueue($this->sqs, 'my_job_handler', $this->queueUrl);
+			$queue = new SqsPlainQueue($this->sqs, $this->queueUrl, ['message_handler' => 'my_message_handler']);
 			$this->assertEquals($this->queueUrl, $queue->getQueue(null));
 			$queueUrl = $this->baseUrl . '/' . $this->account . '/test';
 			$this->assertEquals($queueUrl, $queue->getQueue($queueUrl));

@@ -12,6 +12,7 @@
 	use Illuminate\Queue\QueueManager;
 	use Illuminate\Support\ServiceProvider;
 	use MehrIt\LaraSqsPlain\Queue\Connectors\SqsPlainConnector;
+	use MehrIt\LaraSqsPlain\Queue\Jobs\SqsPlainJob;
 
 	class SqsPlainServiceProvider extends ServiceProvider
 	{
@@ -25,6 +26,24 @@
 			});
 		}
 
+
+		public function register() {
+
+			// register resolver for SqsPlainJob
+			app()->bind(SqsPlainJob::class, /** @noinspection PhpUnusedParameterInspection */
+			function($app, $params) {
+
+				return new SqsPlainJob(
+					$params['container'],
+					$params['sqs'],
+					$params['job'],
+					$params['connectionName'],
+					$params['queue'],
+					$params['queueOptions']['message_handler']
+				);
+
+			});
+		}
 
 
 	}
