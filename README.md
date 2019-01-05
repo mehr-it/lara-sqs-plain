@@ -28,6 +28,13 @@ handle the messages:
 		'message_handler' => 'App\\Job\\MyPlainHandler',
 	],
 	
+### Long polling
+
+To enable long polling, you may add the option `message_wait_timeout` to the queue
+configuration. This sets the `WaitTimeSeconds` parameter to the configured amount of time.
+
+	'message_wait_timeout' => 20,
+	
 ## Message handlers
 
 To create a handler for SQS messages, simply extend the `SqsPlainMessageHandler` class.
