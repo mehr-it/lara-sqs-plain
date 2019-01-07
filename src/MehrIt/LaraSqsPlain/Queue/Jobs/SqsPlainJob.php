@@ -10,13 +10,16 @@
 
 
 	use Aws\Sqs\SqsClient;
+	use DateTimeInterface;
 	use Illuminate\Container\Container;
-	use Illuminate\Queue\Jobs\SqsJob;
 	use Illuminate\Contracts\Queue\Job as JobContract;
+	use MehrIt\LaraSqsExt\Queue\Jobs\SqsExtJob;
 
-	class SqsPlainJob extends SqsJob implements JobContract
+	class SqsPlainJob extends SqsExtJob implements JobContract
 	{
 		protected $messageHandler;
+
+		protected $fakedBody;
 
 		/**
 		 * Create a new job instance.
@@ -52,20 +55,47 @@
 		 */
 		public function getRawBody() {
 
-			$data            = $this->job['Body'];
-			$jobHandler      = $this->messageHandler;
+			if (!$this->fakedBody) {
 
-			// we convert the plain body to laravel's native body, calling the given handler
-			$retBody = json_encode([
-				"job"  => "Illuminate\Queue\CallQueuedHandler@call",
-				"data" => [
-					"commandName" => $jobHandler,
-					"command"     => serialize(app()->make($jobHandler, [
-						'message' => $data,
-					]))
-				]
-			]);
+				$data       = $this->job['Body'];
+				$jobHandler = $this->messageHandler;
 
-			return $retBody;
+				// create a job instance
+				$job = app()->make($jobHandler, [
+					'message' => $data,
+				]);
+
+				// we convert the plain body to laravel's native body, calling the given handler
+				$this->fakedBody = json_encode([
+					'job'                           => 'Illuminate\\Queue\\CallQueuedHandler@call',
+					'maxTries'                      => $job->tries ?? null,
+					'timeout'                       => $job->timeout ?? null,
+					'timeoutAt'                     => $this->getJobExpiration($job),
+					'automaticQueueVisibility'      => $job->automaticQueueVisibility ?? true,
+					'automaticQueueVisibilityExtra' => $job->automaticQueueVisibilityExtra ?? 0,
+					'data'                          => [
+						'commandName' => get_class($job),
+						'command'     => serialize($job)
+					]
+				]);
+			}
+
+			return $this->fakedBody;
+		}
+
+		/**
+		 * Get the expiration timestamp for an object-based queue handler.
+		 *
+		 * @param  mixed $job
+		 * @return mixed
+		 */
+		protected function getJobExpiration($job) {
+			if (!method_exists($job, 'retryUntil') && !isset($job->timeoutAt))
+				return null;
+
+			$expiration = $job->timeoutAt ?? $job->retryUntil();
+
+			return $expiration instanceof DateTimeInterface
+				? $expiration->getTimestamp() : $expiration;
 		}
 	}

@@ -5,6 +5,9 @@ work with third party messages not dispatched from Laravel.
 You receive the plain message content in the constructor of your handler classes. You may
 specify your own handler class for each queue.
 
+This package is based on the [mehr-it/lara-sqs-ext](https://github.com/mehr-it/lara-sqs-ext)
+package and implements most of it's features.
+
 ## Installation
 
 	composer require mehr-it/lara-sqs-plain
@@ -50,8 +53,12 @@ be available in the `message` attribute:
 						
 	}
 	
-The `InteractsWithQueue` trait is already implemented in the base class, so you can interact
+The `InteractsWithQueue` and `InteractsWithSqsQueue` trait is already implemented in the base class, so you can interact
 with the queue.
+
+Message handlers my define the same properties as common jobs, to control the job
+workers. This includes `tries`, `timeout`, `timeoutAt`, `automaticQueueVisibility`,
+`automaticQueueVisibilityExtra` or the `retryUntil` method.
 
 ## Thanks
 Thanks to Jussi Hamalainen who wrote the `jusahah/laravel-sqs-jobless` package which served

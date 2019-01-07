@@ -11,10 +11,27 @@
 
 
 	use Illuminate\Queue\InteractsWithQueue;
+	use MehrIt\LaraSqsExt\Queue\InteractsWithSqsQueue;
 
 	class SqsPlainMessageHandler
 	{
 		use InteractsWithQueue;
+		use InteractsWithSqsQueue;
+
+
+		/**
+		 * The automatic queue visibility time. True will use the job's timeout if specified
+		 *
+		 * @return int|boolean
+		 */
+		public $automaticQueueVisibility = true;
+
+		/**
+		 * The automatic queue visibility time to add to job timeout
+		 *
+		 * @var int
+		 */
+		public $automaticQueueVisibilityExtra = 0;
 
 		/**
 		 * @var string

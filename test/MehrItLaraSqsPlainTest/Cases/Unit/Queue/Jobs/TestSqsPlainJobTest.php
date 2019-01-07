@@ -9,6 +9,7 @@
 	namespace MehrItLaraSqsPlainTest\Cases\Unit\Queue\Jobs;
 
 	use Aws\Sqs\SqsClient;
+	use Carbon\Carbon;
 	use Illuminate\Container\Container;
 	use Illuminate\Queue\SqsQueue;
 	use MehrIt\LaraSqsPlain\Queue\Handlers\SqsPlainMessageHandler;
@@ -90,6 +91,94 @@
 			$job->getSqs()->expects($this->once())->method('changeMessageVisibility')->with(['QueueUrl' => $this->queueUrl, 'ReceiptHandle' => $this->mockedReceiptHandle, 'VisibilityTimeout' => $this->releaseDelay]);
 			$job->release($this->releaseDelay);
 			$this->assertTrue($job->isReleased());
+		}
+
+		public function testTriesSet() {
+			app()->bind('testHandler', function($app, $params) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->tries = 15;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame(15, $job->maxTries());
+		}
+
+		public function testTimeoutSet() {
+			app()->bind('testHandler', function($app, $params) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->timeout = 70;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame(70, $job->timeout());
+		}
+
+		public function testTimeoutAtSet() {
+			$dt = new Carbon();
+
+			app()->bind('testHandler', function($app, $params) use ($dt) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->timeoutAt = $dt->getTimestamp();
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame($dt->getTimestamp(), $job->timeoutAt());
+		}
+
+		public function testTimeoutAtSetToDateTime() {
+			$dt = new Carbon();
+
+			app()->bind('testHandler', function($app, $params) use ($dt) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->timeoutAt = $dt;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame($dt->getTimestamp(), $job->timeoutAt());
+		}
+
+		public function testAutomaticQueueVisibilitySet() {
+			app()->bind('testHandler', function ($app, $params) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->automaticQueueVisibility = 14;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame(14, $job->automaticQueueVisibility());
+		}
+
+		public function testAutomaticQueueVisibilityExtraSet() {
+			app()->bind('testHandler', function ($app, $params) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->automaticQueueVisibilityExtra = 3;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame(3, $job->automaticQueueVisibilityExtra());
 		}
 
 		protected function getJob($mockContainer = true) {
