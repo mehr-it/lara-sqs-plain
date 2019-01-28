@@ -22,7 +22,7 @@
   "require": {
     "php": ">=7.0.0",
     "aws/aws-sdk-php": "~3.0",
-    "mehr-it/lara-sqs-ext": "~2.0",
+    "mehr-it/lara-sqs-ext": "^2.1.0",
     "ext-json": "*"
   },
   "require-dev": {
