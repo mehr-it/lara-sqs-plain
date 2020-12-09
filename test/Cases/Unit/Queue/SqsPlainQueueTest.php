@@ -19,11 +19,11 @@
 
 	class SqsPlainQueueTest extends TestCase
 	{
-		public function tearDown() {
+		public function tearDown():void {
 			m::close();
 		}
 
-		public function setUp() {
+		public function setUp():void {
 			parent::setUp();
 
 			// Use Mockery to mock the SqsClient
@@ -71,7 +71,7 @@
 			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->setContainer(m::mock(Container::class));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
-			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount']])->andReturn($this->mockedReceiveMessageResponseModel);
+			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount', 'SentTimestamp']])->andReturn($this->mockedReceiveMessageResponseModel);
 			$result = $queue->pop($this->queueName);
 			$this->assertInstanceOf(SqsPlainJob::class, $result);
 
@@ -82,7 +82,7 @@
 			$queue = $this->getMockBuilder(SqsPlainQueue::class)->setMethods(['getQueue'])->setConstructorArgs([$this->sqs, $this->queueName, $this->account, ['message_handler' => 'my_message_handler']])->getMock();
 			$queue->setContainer(m::mock(Container::class));
 			$queue->expects($this->once())->method('getQueue')->with($this->queueName)->will($this->returnValue($this->queueUrl));
-			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount']])->andReturn($this->mockedReceiveEmptyMessageResponseModel);
+			$this->sqs->shouldReceive('receiveMessage')->once()->with(['QueueUrl' => $this->queueUrl, 'AttributeNames' => ['ApproximateReceiveCount', 'SentTimestamp']])->andReturn($this->mockedReceiveEmptyMessageResponseModel);
 			$result = $queue->pop($this->queueName);
 			$this->assertNull($result);
 		}

@@ -12,6 +12,7 @@
 	use Carbon\Carbon;
 	use Illuminate\Container\Container;
 	use Illuminate\Queue\SqsQueue;
+	use Illuminate\Support\Str;
 	use MehrIt\LaraSqsPlain\Queue\Handlers\SqsPlainMessageHandler;
 	use MehrIt\LaraSqsPlain\Queue\Jobs\SqsPlainJob;
 	use MehrItLaraSqsPlainTest\Cases\TestCase;
@@ -19,7 +20,7 @@
 
 	class SqsPlainJobTest extends TestCase
 	{
-		public function setUp() {
+		public function setUp():void {
 			parent::setUp();
 
 			TestSqsPlainJobHandler::reset();
@@ -55,7 +56,7 @@
 			$this->jobHandler          = TestSqsPlainJobHandler::class;
 		}
 
-		public function tearDown() {
+		public function tearDown():void {
 			m::close();
 		}
 
@@ -122,6 +123,10 @@
 		}
 
 		public function testTimeoutAtSet() {
+
+			if (version_compare(app()->version(), '8.0', '>='))
+				$this->markTestSkipped('This test is only for laravel versions < 8');
+
 			$dt = new Carbon();
 
 			app()->bind('testHandler', function($app, $params) use ($dt) {
@@ -138,6 +143,10 @@
 		}
 
 		public function testTimeoutAtSetToDateTime() {
+
+			if (version_compare(app()->version(), '8.0', '>='))
+				$this->markTestSkipped('This test is only for laravel versions < 8');
+
 			$dt = new Carbon();
 
 			app()->bind('testHandler', function($app, $params) use ($dt) {
@@ -151,6 +160,46 @@
 			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
 
 			$this->assertSame($dt->getTimestamp(), $job->timeoutAt());
+		}
+
+		public function testRetryUntilSet() {
+
+			if (version_compare(app()->version(), '8.0', '<='))
+				$this->markTestSkipped('This test is only for laravel versions >= 8');
+
+			$dt = new Carbon();
+
+			app()->bind('testHandler', function($app, $params) use ($dt) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->timeoutAt = $dt->getTimestamp();
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame($dt->getTimestamp(), $job->retryUntil());
+		}
+
+		public function testRetryUntilSetToDateTime() {
+
+			if (version_compare(app()->version(), '8.0', '<='))
+				$this->markTestSkipped('This test is only for laravel versions >= 8');
+
+			$dt = new Carbon();
+
+			app()->bind('testHandler', function($app, $params) use ($dt) {
+				$handler = new TestSqsPlainJobHandler($params['message']);
+
+				$handler->timeoutAt = $dt;
+
+				return $handler;
+			});
+
+			$job = new SqsPlainJob(app(), $this->mockedSqsClient, $this->mockedJobData, 'connection-name', $this->queueUrl, 'testHandler');
+
+			$this->assertSame($dt->getTimestamp(), $job->retryUntil());
 		}
 
 		public function testAutomaticQueueVisibilitySet() {

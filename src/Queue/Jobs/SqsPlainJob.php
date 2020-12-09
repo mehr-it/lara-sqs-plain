@@ -12,10 +12,9 @@
 	use Aws\Sqs\SqsClient;
 	use DateTimeInterface;
 	use Illuminate\Container\Container;
-	use Illuminate\Contracts\Queue\Job as JobContract;
 	use MehrIt\LaraSqsExt\Queue\Jobs\SqsExtJob;
 
-	class SqsPlainJob extends SqsExtJob implements JobContract
+	class SqsPlainJob extends SqsExtJob
 	{
 		protected $messageHandler;
 
